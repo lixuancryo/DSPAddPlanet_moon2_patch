@@ -1,0 +1,48 @@
+DSPAddPlanet 3.0 notes
+
+Internal plugin version: 3.0.11
+
+Installed theme names:
+GiganticForest
+RedForest
+SulfurSea
+MoltenWorld
+Beach
+Pandora
+Obsidian
+HotObsidian
+Inferno
+OilGiant
+
+DwarfPlanet and Comet were removed because very small planet themes are unstable with the vanilla planet generator.
+
+Use them in config.xml like this:
+<ThemeName>GiganticForest</ThemeName>
+
+Do not use ThemeId and ThemeName on the same planet. Pick one.
+
+Random galaxy generation switch:
+<EnableGalacticScaleThemesInRandomGeneration>false</EnableGalacticScaleThemesInRandomGeneration>
+
+false: GalacticScale-style themes are only used when a planet explicitly has <ThemeName>.
+true: the normal galaxy generator may also pick these themes.
+
+Random generation notes:
+MoltenWorld uses the same random generation slot as Lava, with about 20% of Lava's weight.
+RedForest, Beach, Pandora and GiganticForest can appear in organic positions and cold positions when the random switch is true.
+
+Beach and BeachCold use a GalacticScale-style GS2 vein layout:
+Silicium, Bamboo, Fractal and Grat.
+
+3.0.11 note:
+SulfurSea ground is now forced to a darker matte sulfur-rock material. This keeps the sulfur ocean and GS-style terrain while avoiding the washed-out land appearance seen with the brighter GalacticScale tint.
+
+For Inferno and OilGiant, set:
+<GasGiant>true</GasGiant>
+
+For the other added themes, set:
+<GasGiant>false</GasGiant>
+
+These are standalone GalacticScale-style themes for DSPAddPlanet. They reuse the game's own planet algorithms and materials, with GalacticScale-inspired colors, vegetation, gas/resource settings and theme names. They do not enable GalacticScale's full galaxy generator or its custom terrain algorithm system.
+
+DSPAddPlanet still declares GalacticScale 2 as incompatible. If GalacticScale is enabled, DSPAddPlanet may not load.

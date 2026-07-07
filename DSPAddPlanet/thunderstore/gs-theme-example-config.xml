@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Config>
+    <!--
+        DSPAddPlanet-moon^2-patch 3.0.5 example.
+
+        Replace GameName, ClusterString and Star with the values copied from the in-game Add Planet panel.
+        ThemeName can use GalacticScale-style themes without enabling GalacticScale.
+
+        This switch controls whether these new themes can appear in the game's normal random galaxy generation.
+        false: only planets with <ThemeName> use these themes.
+        true: vanilla random generation may also use them.
+    -->
+    <EnableGalacticScaleThemesInRandomGeneration>false</EnableGalacticScaleThemesInRandomGeneration>
+
+    <!--
+        ThemeName values added by this build:
+        GiganticForest, RedForest, SulfurSea, MoltenWorld, Beach, Pandora,
+        Obsidian, HotObsidian, Inferno, OilGiant
+
+        DwarfPlanet and Comet were removed because very small planets are unstable with the vanilla generator.
+        BarrenSatellite was removed because the vanilla generator already includes that theme.
+
+        For normal solid planets, keep GasGiant false.
+        For Inferno and OilGiant, set GasGiant true.
+    -->
+
+    <Global>
+        <Planets>
+        </Planets>
+    </Global>
+
+    <GameNameSpecific>
+        <Planets>
+            <!-- A new normal planet using the GalacticScale-style Gigantic Forest appearance. -->
+            <Planet>
+                <UniqueStarId>
+                    <GameName>Replace with save name</GameName>
+                    <ClusterString>Replace with cluster string</ClusterString>
+                    <Star>Replace with star name</Star>
+                </UniqueStarId>
+
+                <IsBirthPoint>false</IsBirthPoint>
+                <Index>4</Index>
+                <OrbitAround>0</OrbitAround>
+                <OrbitIndex>3</OrbitIndex>
+                <Number>4</Number>
+
+                <GasGiant>false</GasGiant>
+                <InfoSeed>3001</InfoSeed>
+                <GenSeed>4001</GenSeed>
+
+                <ForcePlanetRadius>false</ForcePlanetRadius>
+                <Radius>200</Radius>
+                <OrbitalPeriod>3600</OrbitalPeriod>
+                <RotationPeriod>3600</RotationPeriod>
+                <IsTidalLocked>true</IsTidalLocked>
+                <OrbitInclination>5</OrbitInclination>
+                <Obliquity>10</Obliquity>
+                <OrbitLongitude>30</OrbitLongitude>
+
+                <ThemeName>GiganticForest</ThemeName>
+                <DontGenerateVein>false</DontGenerateVein>
+            </Planet>
+
+            <!-- A moon using Red Forest. -->
+            <Planet>
+                <UniqueStarId>
+                    <GameName>Replace with save name</GameName>
+                    <ClusterString>Replace with cluster string</ClusterString>
+                    <Star>Replace with star name</Star>
+                </UniqueStarId>
+
+                <IsBirthPoint>false</IsBirthPoint>
+                <Index>5</Index>
+                <OrbitAround>4</OrbitAround>
+                <OrbitAroundIndex>4</OrbitAroundIndex>
+                <OrbitIndex>1</OrbitIndex>
+                <Number>1</Number>
+
+                <GasGiant>false</GasGiant>
+                <InfoSeed>3002</InfoSeed>
+                <GenSeed>4002</GenSeed>
+
+                <ForcePlanetRadius>false</ForcePlanetRadius>
+                <Radius>160</Radius>
+                <OrbitalPeriod>1200</OrbitalPeriod>
+                <RotationPeriod>1200</RotationPeriod>
+                <IsTidalLocked>true</IsTidalLocked>
+                <OrbitInclination>10</OrbitInclination>
+                <Obliquity>5</Obliquity>
+                <OrbitLongitude>90</OrbitLongitude>
+
+                <ThemeName>RedForest</ThemeName>
+                <DontGenerateVein>false</DontGenerateVein>
+            </Planet>
+
+            <!-- A moon of that moon using Sulfur Sea. -->
+            <Planet>
+                <UniqueStarId>
+                    <GameName>Replace with save name</GameName>
+                    <ClusterString>Replace with cluster string</ClusterString>
+                    <Star>Replace with star name</Star>
+                </UniqueStarId>
+
+                <IsBirthPoint>false</IsBirthPoint>
+                <Index>6</Index>
+                <OrbitAround>1</OrbitAround>
+                <OrbitAroundIndex>5</OrbitAroundIndex>
+                <OrbitIndex>1</OrbitIndex>
+                <Number>1</Number>
+
+                <GasGiant>false</GasGiant>
+                <InfoSeed>3003</InfoSeed>
+                <GenSeed>4003</GenSeed>
+
+                <ForcePlanetRadius>false</ForcePlanetRadius>
+                <Radius>100</Radius>
+                <OrbitalPeriod>600</OrbitalPeriod>
+                <RotationPeriod>600</RotationPeriod>
+                <IsTidalLocked>true</IsTidalLocked>
+                <OrbitInclination>15</OrbitInclination>
+                <Obliquity>0</Obliquity>
+                <OrbitLongitude>180</OrbitLongitude>
+
+                <ThemeName>SulfurSea</ThemeName>
+                <DontGenerateVein>false</DontGenerateVein>
+            </Planet>
+
+            <!-- Optional gas giant example. Enable only if the target Index/Number do not conflict. -->
+            <Planet>
+                <UniqueStarId>
+                    <GameName>Replace with save name</GameName>
+                    <ClusterString>Replace with cluster string</ClusterString>
+                    <Star>Replace with star name</Star>
+                </UniqueStarId>
+
+                <IsBirthPoint>false</IsBirthPoint>
+                <Index>7</Index>
+                <OrbitAround>0</OrbitAround>
+                <OrbitIndex>4</OrbitIndex>
+                <Number>5</Number>
+
+                <GasGiant>true</GasGiant>
+                <InfoSeed>3004</InfoSeed>
+                <GenSeed>4004</GenSeed>
+
+                <ForcePlanetRadius>false</ForcePlanetRadius>
+                <Radius>200</Radius>
+                <OrbitalPeriod>7200</OrbitalPeriod>
+                <RotationPeriod>7200</RotationPeriod>
+                <IsTidalLocked>false</IsTidalLocked>
+                <OrbitInclination>0</OrbitInclination>
+                <Obliquity>0</Obliquity>
+                <OrbitLongitude>270</OrbitLongitude>
+
+                <ThemeName>Inferno</ThemeName>
+                <DontGenerateVein>true</DontGenerateVein>
+            </Planet>
+        </Planets>
+    </GameNameSpecific>
+</Config>
