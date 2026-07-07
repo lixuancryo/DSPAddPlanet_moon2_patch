@@ -1,6 +1,23 @@
 # DSPAddPlanet-moon^2-patch
 
-这是 Zincon 维护的《戴森球计划》DSPAddPlanet 个人 fork。
+这是 Zincon 维护的《戴森球计划》DSPAddPlanet 个人 fork，不是原版 DSPAddPlanet，也不是 GalacticScale。
+
+先说在前面：Zincon 本人是一个纯代码小白，甚至不知道应该用什么软件编辑代码。制作这个 Mod 的初衷非常简单：我纯粹是为了满足自己游戏里的需求，十分希望能做出一个可以自行添加“卫星的卫星”的 Mod。但原作者已经长久不更新，幸好 AI 的发展让我有机会根据原作者开源出来的代码，在 AI 协助下制作一个符合自己需求的 Mod。
+
+我也非常感谢《戴森球计划》的游戏制作组。没有这款游戏本身，就不会有这些折腾星系生成、星球主题和卫星系统的乐趣。
+
+另外，我也很喜欢 GalacticScale 中的一些自制星球主题。因此，这里做了一个简单的个人 Mod：保留 DSPAddPlanet 自定义添加星球的思路，加入卫星的卫星功能，并尝试把一部分 GalacticScale 风格主题带进 DSPAddPlanet，满足自己的游戏需求。
+
+特别感谢：
+
+- LittleSaya / IndexOutOfRangeDSPMod / DSPAddPlanet  
+  https://github.com/LittleSaya/IndexOutOfRangeDSPMod/tree/master/DSPAddPlanet
+- Touhma / DSP Galactic Scale  
+  https://github.com/Touhma/DSP_Galactic_Scale
+- 《戴森球计划》游戏制作组
+- Codex-GPT 和 AI 工具的发展
+
+使用前请务必备份存档和配置文件。添加或修改星球后，存档可能无法安全恢复。
 
 ## 相比原版 DSPAddPlanet 新增了什么
 
@@ -38,17 +55,6 @@
 | `DontGenerateVein` | 是否禁止生成矿物；`false` 表示允许生成矿物 |
 | `ReplaceAllVeinsTo` | 把矿物统一替换成某一种矿物 |
 | `VeinCustom` | 自定义矿物种类、矿脉数量、矿点数量和矿量 |
-
-本项目不是原版 DSPAddPlanet。它基于 LittleSaya 的 **DSPAddPlanet**，并参考 Touhma 的 **GalacticScale** 部分星球主题和生成思路，由 **Codex-GPT** 协助制作。Zincon 本人是纯代码小白，甚至不知道应该用什么软件编辑代码；这个项目能做出来，主要依靠两位原作者留下的优秀 Mod 代码、Zincon 的测试反馈，以及 Codex-GPT 的协助。
-
-特别感谢：
-
-- LittleSaya / IndexOutOfRangeDSPMod / DSPAddPlanet  
-  https://github.com/LittleSaya/IndexOutOfRangeDSPMod/tree/master/DSPAddPlanet
-- Touhma / DSP Galactic Scale  
-  https://github.com/Touhma/DSP_Galactic_Scale
-
-使用前请务必备份存档和配置文件。添加或修改星球后，存档可能无法安全恢复。
 
 ## 下载与安装
 
