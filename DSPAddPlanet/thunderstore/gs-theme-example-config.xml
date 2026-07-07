@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Config>
     <!--
-        DSPAddPlanet-moon^2-patch 3.0.5 example.
+        DSPAddPlanet-moon^2-patch 3.0.11 example.
 
         Replace GameName, ClusterString and Star with the values copied from the in-game Add Planet panel.
         ThemeName can use GalacticScale-style themes without enabling GalacticScale.
@@ -15,7 +15,8 @@
     <!--
         ThemeName values added by this build:
         GiganticForest, RedForest, SulfurSea, MoltenWorld, Beach, Pandora,
-        Obsidian, HotObsidian, Inferno, OilGiant
+        Obsidian, HotObsidian, GiganticForestCold, RedForestCold,
+        BeachCold, PandoraCold, Inferno, OilGiant
 
         DwarfPlanet and Comet were removed because very small planets are unstable with the vanilla generator.
         BarrenSatellite was removed because the vanilla generator already includes that theme.
@@ -104,7 +105,9 @@
 
                 <IsBirthPoint>false</IsBirthPoint>
                 <Index>6</Index>
-                <OrbitAround>1</OrbitAround>
+                <!-- OrbitAround is still required by the old DSPAddPlanet config shape.
+                     OrbitAroundIndex below is the real parent selector in this fork. -->
+                <OrbitAround>0</OrbitAround>
                 <OrbitAroundIndex>5</OrbitAroundIndex>
                 <OrbitIndex>1</OrbitIndex>
                 <Number>1</Number>

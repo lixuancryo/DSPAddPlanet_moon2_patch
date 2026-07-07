@@ -11,6 +11,10 @@ Beach
 Pandora
 Obsidian
 HotObsidian
+GiganticForestCold
+RedForestCold
+BeachCold
+PandoraCold
 Inferno
 OilGiant
 
@@ -20,6 +24,13 @@ Use them in config.xml like this:
 <ThemeName>GiganticForest</ThemeName>
 
 Do not use ThemeId and ThemeName on the same planet. Pick one.
+
+Moon-of-moon support:
+<OrbitAround>0</OrbitAround>
+<OrbitAroundIndex>5</OrbitAroundIndex>
+
+OrbitAround is still required by the old DSPAddPlanet config shape.
+When OrbitAroundIndex exists, this fork uses OrbitAroundIndex as the real parent planet selector.
 
 Random galaxy generation switch:
 <EnableGalacticScaleThemesInRandomGeneration>false</EnableGalacticScaleThemesInRandomGeneration>
