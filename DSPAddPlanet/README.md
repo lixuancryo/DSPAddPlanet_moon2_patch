@@ -2,6 +2,43 @@
 
 这是 Zincon 维护的《戴森球计划》DSPAddPlanet 个人 fork。
 
+## 相比原版 DSPAddPlanet 新增了什么
+
+这个 fork 保留原版 DSPAddPlanet 的“通过 XML 自定义添加星球”用法，并额外加入下面这些能力。这里只列最短写法，完整示例和注意事项详见下方。
+
+| 新增功能 | 能实现什么效果 | 在 `config.xml` 中的最短写法 | 相关参数 |
+| --- | --- | --- | --- |
+| 卫星的卫星 | 新增星球可以围绕另一颗卫星运行 | `<OrbitAroundIndex>5</OrbitAroundIndex>` | `OrbitAroundIndex` 填父星球的 `Index`；`OrbitAround` 仍要保留；`OrbitIndex` 控制轨道序号；`Number` 控制该轨道中心下的编号 |
+| GalacticScale 风格星球主题 | 不开启 GalacticScale，也能用 Beach、GiganticForest、SulfurSea 等主题 | `<ThemeName>Beach</ThemeName>` | `ThemeName` 和 `ThemeId` 二选一；推荐用 `ThemeName`；固态星球写 `GasGiant=false` |
+| GalacticScale 风格气态巨星 | 添加 Inferno、OilGiant 这类气态巨星主题 | `<GasGiant>true</GasGiant><ThemeName>OilGiant</ThemeName>` | 气态巨星建议同时写 `GasGiant=true`、`DontGenerateVein=true` |
+| 控制新主题是否进入随机星区生成 | 可以选择普通随机星区是否自然刷出这些新主题 | `<EnableGalacticScaleThemesInRandomGeneration>false</EnableGalacticScaleThemesInRandomGeneration>` | 写在 `<Config>` 下面；`false` 表示只在手动指定 `ThemeName` 时使用；`true` 表示随机生成也可能使用 |
+| 移除不稳定小型主题 | 避免 DwarfPlanet、Comet 这类极小星球在原版生成器里出问题 | 不提供这些 `ThemeName` | `DwarfPlanet`、`Comet`、`BarrenSatellite` 不作为可用新增主题 |
+
+## 可设置参数速查
+
+星球写在 `<Planet>...</Planet>` 里。常用参数如下，具体写法详见下方完整示例。
+
+| 参数 | 用途 |
+| --- | --- |
+| `UniqueStarId` | 指定目标存档、星区字符串和恒星名；在 `GameNameSpecific` 中使用 |
+| `IsBirthPoint` | 是否把这颗星球设为出生点 |
+| `Index` | 这颗星球在当前恒星里的索引，新增星球不要和已有星球重复 |
+| `OrbitAround` | 原版 DSPAddPlanet 的父轨道参数；普通行星写 `0`；本 fork 中仍然保留为必填 |
+| `OrbitAroundIndex` | 本 fork 新增参数，直接按父星球 `Index` 指定公转中心，可用于卫星的卫星 |
+| `OrbitIndex` | 轨道序号，会影响和父星球的距离 |
+| `Number` | 同一轨道中心下的星球编号，不要重复 |
+| `GasGiant` | 是否是气态巨星 |
+| `ThemeName` | 按名字指定主题，推荐用于新增 GalacticScale 风格主题 |
+| `ThemeId` | 按数字指定主题；不推荐用于新增主题，因为 ID 可能受主题表顺序影响 |
+| `InfoSeed` / `GenSeed` | 星球信息和地形生成种子 |
+| `ForcePlanetRadius` / `Radius` | 是否强制半径，以及星球半径 |
+| `OrbitalPeriod` / `RotationPeriod` | 公转周期和自转周期 |
+| `IsTidalLocked` | 是否潮汐锁定 |
+| `OrbitInclination` / `Obliquity` / `OrbitLongitude` | 轨道倾角、地轴倾角、升交点经度 |
+| `DontGenerateVein` | 是否禁止生成矿物；`false` 表示允许生成矿物 |
+| `ReplaceAllVeinsTo` | 把矿物统一替换成某一种矿物 |
+| `VeinCustom` | 自定义矿物种类、矿脉数量、矿点数量和矿量 |
+
 本项目不是原版 DSPAddPlanet。它基于 LittleSaya 的 **DSPAddPlanet**，并参考 Touhma 的 **GalacticScale** 部分星球主题和生成思路，由 **Codex-GPT** 协助制作。Zincon 本人是纯代码小白，甚至不知道应该用什么软件编辑代码；这个项目能做出来，主要依靠两位原作者留下的优秀 Mod 代码、Zincon 的测试反馈，以及 Codex-GPT 的协助。
 
 特别感谢：
