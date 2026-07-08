@@ -23,13 +23,15 @@
 
 这个 fork 保留原版 DSPAddPlanet 的“通过 XML 自定义添加星球”用法，并额外加入下面这些能力。这里只列最短写法，完整示例和注意事项详见下方。
 
-| 新增功能 | 能实现什么效果 | 在 `config.xml` 中的最短写法 | 相关参数 |
-| --- | --- | --- | --- |
-| 卫星的卫星 | 新增星球可以围绕另一颗卫星运行 | `<OrbitAroundIndex>5</OrbitAroundIndex>` | `OrbitAroundIndex` 填父星球的 `Index`；`OrbitAround` 仍要保留；`OrbitIndex` 控制轨道序号；`Number` 控制该轨道中心下的编号 |
-| GalacticScale 风格星球主题 | 不开启 GalacticScale，也能用 Beach、GiganticForest、SulfurSea 等主题 | `<ThemeName>Beach</ThemeName>` | `ThemeName` 和 `ThemeId` 二选一；推荐用 `ThemeName`；固态星球写 `GasGiant=false` |
-| GalacticScale 风格气态巨星 | 添加 Inferno、OilGiant 这类气态巨星主题 | `<GasGiant>true</GasGiant><ThemeName>OilGiant</ThemeName>` | 气态巨星建议同时写 `GasGiant=true`、`DontGenerateVein=true` |
-| 控制新主题是否进入随机星区生成 | 可以选择普通随机星区是否自然刷出这些新主题 | `<EnableGalacticScaleThemesInRandomGeneration>false</EnableGalacticScaleThemesInRandomGeneration>` | 写在 `<Config>` 下面；`false` 表示只在手动指定 `ThemeName` 时使用；`true` 表示随机生成也可能使用 |
-| 移除不稳定小型主题 | 避免 DwarfPlanet、Comet 这类极小星球在原版生成器里出问题 | 不提供这些 `ThemeName` | `DwarfPlanet`、`Comet`、`BarrenSatellite` 不作为可用新增主题 |
+- **卫星的卫星**：新增星球可以围绕另一颗卫星运行。最短写法：`<OrbitAroundIndex>5</OrbitAroundIndex>`。这里的 `5` 填父星球的 `Index`；`OrbitAround` 仍要保留；`OrbitIndex` 控制轨道序号；`Number` 控制该轨道中心下的编号。
+
+- **GalacticScale 风格星球主题**：不开启 GalacticScale，也能用 Beach、GiganticForest、SulfurSea 等主题。最短写法：`<ThemeName>Beach</ThemeName>`。`ThemeName` 和 `ThemeId` 二选一，推荐用 `ThemeName`；固态星球通常写 `GasGiant=false`。
+
+- **GalacticScale 风格气态巨星**：可以添加 Inferno、OilGiant 这类气态巨星主题。最短写法：`<GasGiant>true</GasGiant><ThemeName>OilGiant</ThemeName>`。气态巨星建议同时写 `GasGiant=true` 和 `DontGenerateVein=true`。
+
+- **控制新主题是否进入随机星区生成**：可以选择普通随机星区是否自然刷出这些新主题。最短写法：`<EnableGalacticScaleThemesInRandomGeneration>false</EnableGalacticScaleThemesInRandomGeneration>`。这一行写在 `<Config>` 下面；`false` 表示只在手动指定 `ThemeName` 时使用；`true` 表示随机生成也可能使用。
+
+- **移除不稳定小型主题**：避免 DwarfPlanet、Comet 这类极小星球在原版生成器里出问题。本 fork 不提供 `DwarfPlanet`、`Comet`、`BarrenSatellite` 这些新增 `ThemeName`。
 
 ## 可设置参数速查
 
