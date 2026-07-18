@@ -23,8 +23,8 @@ namespace DSPAddPlanet
     {
         public const string PLUGIN_GUID = "Zincon.DSPAddPlanetMoon2Patch";
         public const string PLUGIN_NAME = "DSPAddPlanet-moon^2-patch";
-        public const string PLUGIN_VERSION = "3.0.11";
-        public const string BUILD_TAG = "dspaddplanet-3.0.11-sulfursea-matte-ground-2026-06-14";
+        public const string PLUGIN_VERSION = "3.0.12";
+        public const string BUILD_TAG = "dspaddplanet-3.0.12-planet-radius-compat-2026-07-18";
 
         static public Plugin Instance { get => instance; }
         static private Plugin instance = null;
@@ -85,6 +85,7 @@ namespace DSPAddPlanet
             harmony.PatchAll(typeof(Patch_PlanetModeling));
             harmony.PatchAll(typeof(Patch_TrashSystem));
             harmony.PatchAll(typeof(Patch_PlayerController));
+            harmony.PatchAll(typeof(Patch_PlanetRadiusCompatibility));
             harmony.PatchAll(typeof(Patch_StationComponent));
             harmony.PatchAll(typeof(Patch_PlanetSimulator));
             harmony.PatchAll(typeof(Patch_PlanetGrid));
@@ -1445,6 +1446,291 @@ namespace DSPAddPlanet
         }
 
         /// <summary>
+        /// 修正非 200 半径固态星球的云层、建造网格和矿脉距离判断。
+        /// </summary>
+        class Patch_PlanetRadiusCompatibility
+        {
+            private const float VANILLA_SOLID_RADIUS = 200f;
+            private const float SMALL_PLANET_RADIUS = 100f;
+            private static readonly HashSet<int> atmosphereRadiusLogged = new HashSet<int>();
+            private static readonly HashSet<int> smallPlanetColliderLogged = new HashSet<int>();
+            private static bool smallPlanetColliderErrorLogged;
+
+            [HarmonyPrefix, HarmonyPatch(typeof(CloudSimulator), "OnEnable")]
+            static void CloudSimulator_OnEnable_Prefix (CloudSimulator __instance)
+            {
+                ApplyAtmosphereRadius(__instance?.planet);
+            }
+
+            [HarmonyPostfix, HarmonyPatch(typeof(PlanetAtmoBlur), "Update")]
+            static void PlanetAtmoBlur_Update_Postfix (PlanetAtmoBlur __instance)
+            {
+                PlanetData planet = GameMain.localPlanet;
+                if (planet == null || planet.type == EPlanetType.Gas || GameMain.mainPlayer == null || __instance?.blurMat == null)
+                {
+                    return;
+                }
+
+                float radius = Mathf.Max(planet.realRadius, 1f);
+                float playerDistance = GameMain.mainPlayer.position.magnitude;
+                float blur = Mathf.Clamp01((GetAtmoBlurOuterRadius() - playerDistance) / GetAtmoBlurFadeDistance());
+                __instance.blurMat.SetVector("_PlanetRadius", new Vector4(radius, radius, radius * 1.2f, blur));
+            }
+
+            [HarmonyTranspiler, HarmonyPatch(typeof(PlanetAtmoBlur), "Update")]
+            static IEnumerable<CodeInstruction> PlanetAtmoBlur_Update_Transpiler (IEnumerable<CodeInstruction> instructions)
+            {
+                MethodInfo getOuterRadius = AccessTools.Method(typeof(Patch_PlanetRadiusCompatibility), nameof(GetAtmoBlurOuterRadius));
+                MethodInfo getFadeDistance = AccessTools.Method(typeof(Patch_PlanetRadiusCompatibility), nameof(GetAtmoBlurFadeDistance));
+                int outerRadiusReplaced = 0;
+                int fadeDistanceReplaced = 0;
+
+                foreach (CodeInstruction instruction in instructions)
+                {
+                    if (instruction.opcode == OpCodes.Ldc_R4 && instruction.operand is float value)
+                    {
+                        if (Mathf.Approximately(value, 800f))
+                        {
+                            instruction.opcode = OpCodes.Call;
+                            instruction.operand = getOuterRadius;
+                            outerRadiusReplaced++;
+                        }
+                        else if (Mathf.Approximately(value, 300f))
+                        {
+                            instruction.opcode = OpCodes.Call;
+                            instruction.operand = getFadeDistance;
+                            fadeDistanceReplaced++;
+                        }
+                    }
+                    yield return instruction;
+                }
+
+                if (outerRadiusReplaced != 1 || fadeDistanceReplaced != 1)
+                {
+                    Instance.Logger.LogWarning($"Atmosphere blur compatibility expected one 800 and one 300 constant, replaced {outerRadiusReplaced} and {fadeDistanceReplaced}");
+                }
+            }
+
+            [HarmonyTranspiler, HarmonyPatch(typeof(MinerComponent), nameof(MinerComponent.IsTargetVeinInRange))]
+            static IEnumerable<CodeInstruction> MinerComponent_IsTargetVeinInRange_Transpiler (IEnumerable<CodeInstruction> instructions)
+            {
+                List<CodeInstruction> codes = new List<CodeInstruction>(instructions);
+                MethodInfo getRadius = AccessTools.Method(typeof(Patch_PlanetRadiusCompatibility), nameof(GetLocalPlanetRadius));
+                int replaced = 0;
+                foreach (CodeInstruction instruction in codes)
+                {
+                    if (instruction.opcode == OpCodes.Ldc_R4 && instruction.operand is float value && Mathf.Approximately(value, VANILLA_SOLID_RADIUS))
+                    {
+                        instruction.opcode = OpCodes.Call;
+                        instruction.operand = getRadius;
+                        replaced++;
+                    }
+                }
+                if (replaced != 2)
+                {
+                    Instance.Logger.LogWarning($"Miner radius compatibility expected 2 radius constants, replaced {replaced}");
+                }
+                return codes;
+            }
+
+            [HarmonyPrefix, HarmonyPatch(typeof(BuildTool_Path), nameof(BuildTool_Path.GetGridWidth))]
+            static bool BuildTool_Path_GetGridWidth_Prefix (BuildTool_Path __instance, Vector3 _pos, Vector3 _forward, ref float __result)
+            {
+                Vector3 normalized = _pos.normalized;
+                if (normalized.x * normalized.x + normalized.z * normalized.z <= 1E-06f)
+                {
+                    __result = 1.254f;
+                    return false;
+                }
+
+                PlanetData planet = __instance.planet;
+                float radius = Mathf.Max(planet?.realRadius ?? VANILLA_SOLID_RADIUS, 1f);
+                int segment = planet?.aux?.activeGrid?.segment ?? Mathf.Max(4, (int)(radius / 4f + 0.1f) * 4);
+                Vector3 surfacePosition = normalized * radius;
+                Vector3 pole = normalized.y > 0f ? new Vector3(0f, radius, 0f) : new Vector3(0f, -radius, 0f);
+                Vector3 meridian = (pole - surfacePosition).normalized;
+                float longitudeWeight = Mathf.Abs(Vector3.Dot(Vector3.Cross(normalized, meridian), _forward));
+                int longitudeSegments = BlueprintUtils.GetLongitudeSegmentCount(normalized, segment) * 5;
+                float latitudeCircleRadius = Mathf.Sqrt(Mathf.Max(0f, 1f - normalized.y * normalized.y)) * radius;
+                float longitudeGridWidth = latitudeCircleRadius * (float)Math.PI * 2f / Mathf.Max(longitudeSegments, 1);
+                __result = longitudeWeight * longitudeGridWidth + (1f - longitudeWeight) * 1.254f;
+                return false;
+            }
+
+            [HarmonyPrefix, HarmonyPatch(typeof(NearColliderLogic), nameof(NearColliderLogic.GetVeinsInAreaNonAlloc))]
+            static bool NearColliderLogic_GetVeinsInAreaNonAlloc_Prefix (
+                NearColliderLogic __instance,
+                Vector3 center,
+                float areaRadius,
+                ref int[] veinIds,
+                ref int __result,
+                ColliderContainer[] ___colChunks,
+                int[] ___activeColHashes,
+                ref int ___activeColHashCount
+            )
+            {
+                PlanetData planet = __instance?.planet;
+                if (planet == null || planet.realRadius >= SMALL_PLANET_RADIUS || veinIds == null || ___colChunks == null || ___activeColHashes == null)
+                {
+                    return true;
+                }
+
+                try
+                {
+                    Array.Clear(veinIds, 0, veinIds.Length);
+                    ___activeColHashCount = 0;
+
+                    Vector3 normalized = center.normalized;
+                    Vector3 right = Vector3.Cross(normalized, Vector3.up).normalized;
+                    Vector3 forward;
+                    if (right.sqrMagnitude < 0.25f)
+                    {
+                        right = Vector3.right;
+                        forward = Vector3.forward;
+                    }
+                    else
+                    {
+                        forward = Vector3.Cross(right, normalized).normalized;
+                    }
+
+                    float step = 2f + Mathf.RoundToInt(planet.realRadius / 150f);
+                    int sampleCount = Mathf.CeilToInt(areaRadius / Mathf.Max(step, 1f));
+                    float centerMagnitude = center.magnitude;
+                    for (int x = -sampleCount; x <= sampleCount && ___activeColHashCount < ___activeColHashes.Length; x++)
+                    {
+                        for (int y = -sampleCount; y <= sampleCount && ___activeColHashCount < ___activeColHashes.Length; y++)
+                        {
+                            Vector3 position = center + right * (x * step) + forward * (y * step);
+                            position = position.normalized * centerMagnitude;
+                            AddActiveColliderHash(position, ___activeColHashes, ref ___activeColHashCount);
+                        }
+                    }
+
+                    int resultCount = 0;
+                    for (int i = 0; i < ___activeColHashCount; i++)
+                    {
+                        int hash = ___activeColHashes[i];
+                        if (hash < 0 || hash >= ___colChunks.Length || ___colChunks[hash] == null)
+                        {
+                            continue;
+                        }
+                        ColliderData[] colliderPool = ___colChunks[hash].colliderPool;
+                        for (int j = 1; j < ___colChunks[hash].cursor; j++)
+                        {
+                            ColliderData collider = colliderPool[j];
+                            if (collider.idType == 0 || collider.isForBuild || collider.objType != EObjectType.Vein ||
+                                (collider.pos - center).sqrMagnitude > areaRadius * areaRadius + collider.ext.sqrMagnitude)
+                            {
+                                continue;
+                            }
+
+                            bool duplicate = false;
+                            for (int k = 0; k < resultCount; k++)
+                            {
+                                if (veinIds[k] == collider.objId)
+                                {
+                                    duplicate = true;
+                                    break;
+                                }
+                            }
+                            if (duplicate)
+                            {
+                                continue;
+                            }
+                            if (resultCount >= veinIds.Length)
+                            {
+                                Array.Resize(ref veinIds, Math.Max(4, veinIds.Length * 2));
+                            }
+                            veinIds[resultCount++] = collider.objId;
+                        }
+                    }
+
+                    __result = resultCount;
+                    if (smallPlanetColliderLogged.Add(planet.id))
+                    {
+                        Instance.Logger.LogInfo($"Enabled small-planet vein collision sampling for {planet.displayName}, radius {planet.realRadius:F1}");
+                    }
+                    return false;
+                }
+                catch (Exception e)
+                {
+                    if (!smallPlanetColliderErrorLogged)
+                    {
+                        smallPlanetColliderErrorLogged = true;
+                        Instance.Logger.LogWarning("Small-planet vein collision sampling fell back to the game implementation: " + e.Message);
+                    }
+                    return true;
+                }
+            }
+
+            public static void ApplyAtmosphereRadius (PlanetData planet)
+            {
+                if (planet == null || planet.type == EPlanetType.Gas || planet.realRadius <= 0f)
+                {
+                    return;
+                }
+
+                bool changed = ScaleAtmosphereMaterial(planet.atmosMaterial, planet.realRadius);
+                changed |= ScaleAtmosphereMaterial(planet.atmosMaterialLate, planet.realRadius);
+                if (changed && atmosphereRadiusLogged.Add(planet.id))
+                {
+                    Instance.Logger.LogInfo($"Scaled atmosphere and cloud shell for {planet.displayName}, radius {planet.realRadius:F1}");
+                }
+            }
+
+            static bool ScaleAtmosphereMaterial (Material material, float targetRadius)
+            {
+                if (material == null || !material.HasProperty("_PlanetRadius"))
+                {
+                    return false;
+                }
+                Vector4 radius = material.GetVector("_PlanetRadius");
+                if (radius.x <= 0.01f || Mathf.Abs(radius.x - targetRadius) <= 0.01f)
+                {
+                    return false;
+                }
+                radius *= targetRadius / radius.x;
+                material.SetVector("_PlanetRadius", radius);
+                return true;
+            }
+
+            static float GetLocalPlanetRadius ()
+            {
+                return Mathf.Max(GameMain.localPlanet?.realRadius ?? VANILLA_SOLID_RADIUS, 1f);
+            }
+
+            static float GetAtmoBlurOuterRadius ()
+            {
+                return GetLocalPlanetRadius() * 4f;
+            }
+
+            static float GetAtmoBlurFadeDistance ()
+            {
+                return GetLocalPlanetRadius() * 1.5f;
+            }
+
+            static void AddActiveColliderHash (Vector3 position, int[] activeHashes, ref int activeCount)
+            {
+                int hash = PlanetPhysics.HashPhysBlock(position);
+                if (hash < 0)
+                {
+                    return;
+                }
+                for (int i = 0; i < activeCount; i++)
+                {
+                    if (activeHashes[i] == hash)
+                    {
+                        return;
+                    }
+                }
+                if (activeCount < activeHashes.Length)
+                {
+                    activeHashes[activeCount++] = hash;
+                }
+            }
+        }
+
+        /// <summary>
         /// 物流站点和物流飞船的行为
         /// </summary>
         class Patch_StationComponent
@@ -1644,6 +1930,7 @@ namespace DSPAddPlanet
             {
                 ___planetData = planet;
                 GalacticScaleThemeRegistry.ApplyRegisteredThemeToPlanet(___planetData);
+                Patch_PlanetRadiusCompatibility.ApplyAtmosphereRadius(___planetData);
                 if (___planetData.atmosMaterial != null) {
                     GameObject gameObject = new GameObject("Atmosphere");
                     gameObject.layer = 31;
@@ -1867,7 +2154,7 @@ namespace DSPAddPlanet
 
             static float GetLocalPlanetRadius ()
             {
-                return GameMain.localPlanet.realRadius;
+                return (GameMain.localPlanet?.realRadius ?? 200f) + 0.2f;
             }
         }
 

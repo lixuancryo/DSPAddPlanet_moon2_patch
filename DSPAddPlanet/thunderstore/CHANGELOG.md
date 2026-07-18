@@ -1,3 +1,12 @@
+# DSPAddPlanet 3.0.12
+
+- Scaled solid-planet atmosphere material radii before cloud initialization, so nephogram and cloud-particle heights follow custom planet radius.
+- Scaled the local atmosphere blur shell, activation distance, and fade distance for non-200-radius solid planets.
+- Changed miner-to-vein range checks and belt grid-width calculations to use the current planet radius instead of a fixed radius of 200.
+- Added denser curved-surface vein collider sampling for solid planets smaller than radius 100.
+- Corrected the blueprint paste surface offset to use `realRadius + 0.2`.
+- Verified that current DSP logistics dispatch already uses each planet's `AstroData.uRadius`; no extra ship-distance override was added.
+
 # DSPAddPlanet 3.0.11
 
 - Reworked SulfurSea ground material into a darker matte sulfur-rock surface to stop the washed-out land appearance.

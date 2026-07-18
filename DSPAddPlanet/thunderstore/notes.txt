@@ -1,6 +1,12 @@
 DSPAddPlanet 3.0 notes
 
-Internal plugin version: 3.0.11
+Internal plugin version: 3.0.12
+
+3.0.12 radius compatibility:
+- Cloud shell and local atmosphere blur now follow custom solid-planet radius.
+- Miner-to-vein range and belt grid width use the current planet radius.
+- Solid planets below radius 100 use denser vein collider sampling.
+- Blueprint paste uses realRadius + 0.2 for the surface offset.
 
 Installed theme names:
 GiganticForest

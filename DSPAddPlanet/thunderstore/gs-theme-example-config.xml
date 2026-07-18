@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Config>
     <!--
-        DSPAddPlanet-moon^2-patch 3.0.11 example.
+        DSPAddPlanet-moon^2-patch 3.0.12 example.
 
         Replace GameName, ClusterString and Star with the values copied from the in-game Add Planet panel.
         ThemeName can use GalacticScale-style themes without enabling GalacticScale.
