@@ -1,6 +1,12 @@
 DSPAddPlanet 3.0 notes
 
-Internal plugin version: 3.0.12
+Internal plugin version: 3.0.13
+
+3.0.13 star targeting:
+- Use <StarId>31</StarId> inside UniqueStarId to target a fixed one-based star slot.
+- Star ID matching is preferred and remains stable when that star is renamed or modified.
+- Legacy <Star>star name</Star> configurations remain supported as a fallback.
+- Planet creation and custom vein processing use the same ID-first lookup order.
 
 3.0.12 radius compatibility:
 - Cloud shell and local atmosphere blur now follow custom solid-planet radius.

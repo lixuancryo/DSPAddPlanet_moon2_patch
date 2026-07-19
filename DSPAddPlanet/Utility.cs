@@ -26,9 +26,19 @@ namespace DSPAddPlanet
             return gameName + '.' + clusterString + '.' + starName;
         }
 
+        static public string UniqueStarIdWithGameName (string gameName, string clusterString, int starId)
+        {
+            return gameName + '.' + clusterString + ".StarId#" + starId;
+        }
+
         static public string UniqueStarIdWithoutGameName (string clusterString, string starName)
         {
             return clusterString + '.' + starName;
+        }
+
+        static public string UniqueStarIdWithoutGameName (string clusterString, int starId)
+        {
+            return clusterString + ".StarId#" + starId;
         }
 
         static public void PrintThemeTable ()
@@ -101,10 +111,11 @@ namespace DSPAddPlanet
         }
 
         /// <summary>
-        /// 根据当前的游戏名称、clusterString和恒星名称从配置列表中获取行星配置信息，如果未找到配置信息则返回null
+        /// 根据当前的游戏名称、clusterString、恒星 ID 和旧版恒星名称获取行星配置信息，如果未找到则返回 null
         /// </summary>
         /// <param name="gameName">当前的游戏名称</param>
         /// <param name="clusterString"></param>
+        /// <param name="starId">当前恒星的一基 ID</param>
         /// <param name="starName"></param>
         /// <param name="globalConfig"></param>
         /// <param name="gameNameSpecificConfig"></param>
@@ -113,6 +124,7 @@ namespace DSPAddPlanet
         static public List<AdditionalPlanetConfig> GetPlanetConfigList (
             string gameName,
             string clusterString,
+            int starId,
             string starName,
             Dictionary<string, List<AdditionalPlanetConfig>> globalConfig,
             Dictionary<string, List<AdditionalPlanetConfig>> gameNameSpecificConfig,
@@ -127,40 +139,53 @@ namespace DSPAddPlanet
 
             if (string.IsNullOrWhiteSpace(gameName))
             {
-                // 如果当前游戏没有名称，则尝试获取全局行星配置
-                uniqueStarId = UniqueStarIdWithoutGameName(clusterString, starName);
+                uniqueStarId = UniqueStarIdWithoutGameName(clusterString, starId);
                 if (globalConfig.ContainsKey(uniqueStarId))
                 {
                     return globalConfig[uniqueStarId];
                 }
-                else
-                {
-                    // 没有游戏名称，且全局配置列表中没有该恒星的配置
-                    return null;
-                }
-            }
-            else
-            {
-                // 游戏名称不为空，则先尝试获取针对特定游戏名称的行星配置，再尝试获取全局行星配置
-                uniqueStarId = UniqueStarIdWithGameName(gameName, clusterString, starName);
-                if (gameNameSpecificConfig.ContainsKey(uniqueStarId))
-                {
-                    return gameNameSpecificConfig[uniqueStarId];
-                }
-                else
+
+                if (!string.IsNullOrWhiteSpace(starName))
                 {
                     uniqueStarId = UniqueStarIdWithoutGameName(clusterString, starName);
                     if (globalConfig.ContainsKey(uniqueStarId))
                     {
                         return globalConfig[uniqueStarId];
                     }
-                    else
-                    {
-                        // 有游戏名称，但是针对特定游戏名称的行星配置列表和全局行星配置列表中都没有该恒星的配置
-                        return null;
-                    }
+                }
+                return null;
+            }
+
+            uniqueStarId = UniqueStarIdWithGameName(gameName, clusterString, starId);
+            if (gameNameSpecificConfig.ContainsKey(uniqueStarId))
+            {
+                return gameNameSpecificConfig[uniqueStarId];
+            }
+
+            if (!string.IsNullOrWhiteSpace(starName))
+            {
+                uniqueStarId = UniqueStarIdWithGameName(gameName, clusterString, starName);
+                if (gameNameSpecificConfig.ContainsKey(uniqueStarId))
+                {
+                    return gameNameSpecificConfig[uniqueStarId];
                 }
             }
+
+            uniqueStarId = UniqueStarIdWithoutGameName(clusterString, starId);
+            if (globalConfig.ContainsKey(uniqueStarId))
+            {
+                return globalConfig[uniqueStarId];
+            }
+
+            if (!string.IsNullOrWhiteSpace(starName))
+            {
+                uniqueStarId = UniqueStarIdWithoutGameName(clusterString, starName);
+                if (globalConfig.ContainsKey(uniqueStarId))
+                {
+                    return globalConfig[uniqueStarId];
+                }
+            }
+            return null;
         }
     }
 }

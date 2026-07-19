@@ -1,3 +1,11 @@
+# DSPAddPlanet 3.0.13
+
+- Added the preferred `<StarId>` XML selector so custom planets keep targeting a fixed one-based star slot after the star is renamed or modified.
+- Applied star-ID-first matching consistently during planet creation and all custom vein generation paths.
+- Kept the legacy `<Star>` name selector as a fallback for existing XML configurations.
+- Changed the in-game Add Planet panel's copied unique-star identifier to use the star ID.
+- Updated the generated and packaged XML examples to use `<StarId>`.
+
 # DSPAddPlanet 3.0.12
 
 - Scaled solid-planet atmosphere material radii before cloud initialization, so nephogram and cloud-particle heights follow custom planet radius.

@@ -23,6 +23,8 @@
 
 这个 fork 保留原版 DSPAddPlanet 的“通过 XML 自定义添加星球”用法，并额外加入下面这些能力。这里只列最短写法，完整示例和注意事项详见下方。
 
+- **按恒星 ID 添加星球**：目标恒星不再必须依赖可能变化的名称。最短写法：`<StarId>31</StarId>`。修改恒星名称、类型或参数后，星球仍会添加到 ID 31；旧的 `<Star>恒星名</Star>` 写法继续兼容。
+
 - **卫星的卫星**：新增星球可以围绕另一颗卫星运行。最短写法：`<OrbitAroundIndex>5</OrbitAroundIndex>`。这里的 `5` 填父星球的 `Index`；`OrbitAround` 仍要保留；`OrbitIndex` 控制轨道序号；`Number` 控制该轨道中心下的编号。
 
 - **GalacticScale 风格星球主题**：不开启 GalacticScale，也能用 Beach、GiganticForest、SulfurSea 等主题。最短写法：`<ThemeName>Beach</ThemeName>`。`ThemeName` 和 `ThemeId` 二选一，推荐用 `ThemeName`；固态星球通常写 `GasGiant=false`。
@@ -41,7 +43,9 @@
 
 | 参数 | 用途 |
 | --- | --- |
-| `UniqueStarId` | 指定目标存档、星区字符串和恒星名；在 `GameNameSpecific` 中使用 |
+| `UniqueStarId` | 包含目标存档、星区字符串和恒星 ID；在 `GameNameSpecific` 中使用 |
+| `StarId` | 目标恒星 ID，从 `1` 开始；推荐使用，不受恒星改名影响 |
+| `Star` | 旧版恒星名称匹配，仅为兼容旧 XML 保留 |
 | `IsBirthPoint` | 是否把这颗星球设为出生点 |
 | `Index` | 这颗星球在当前恒星里的索引，新增星球不要和已有星球重复 |
 | `OrbitAround` | 原版 DSPAddPlanet 的父轨道参数；普通行星写 `0`；本 fork 中仍然保留为必填 |
@@ -59,6 +63,29 @@
 | `DontGenerateVein` | 是否禁止生成矿物；`false` 表示允许生成矿物 |
 | `ReplaceAllVeinsTo` | 把矿物统一替换成某一种矿物 |
 | `VeinCustom` | 自定义矿物种类、矿脉数量、矿点数量和矿量 |
+
+## 按恒星 ID 定位
+
+3.0.13 开始，推荐在 `UniqueStarId` 中使用恒星 ID：
+
+```xml
+<UniqueStarId>
+    <GameName>你的存档名</GameName>
+    <ClusterString>你的星区字符串</ClusterString>
+    <StarId>31</StarId>
+</UniqueStarId>
+```
+
+- 恒星 ID 从 `1` 开始。它表示本次星系中的恒星槽位，例如 ID 31 对应 `galaxy.stars[30]`。
+- 星球 `Index` 仍从 `0` 开始。`StarId` 与星球的 `Index` 是两套不同编号，不要混淆。
+- 修改 ID 31 恒星的名称、类型、质量、位置等参数，不会改变 DSPAddPlanet 的目标。
+- 增加星区恒星总数时，只要目标 ID 仍然存在且没有被其他 Mod 重新排序，配置仍会指向相同 ID。
+- `ClusterString` 仍然必填；在 `GameNameSpecific` 中，`GameName` 也仍然必填，防止配置误用到其他星区或存档。
+- 旧写法 `<Star>恒星名</Star>` 继续兼容。若同一个 `UniqueStarId` 同时包含 `StarId` 和 `Star`，则 `StarId` 优先。
+
+匹配顺序是：特定存档的 `StarId`、特定存档的旧恒星名、全局 `StarId`、全局旧恒星名。建议同一颗恒星的配置统一迁移到 `StarId`，不要一部分按 ID、一部分按名称。
+
+恒星 ID 是星系中的位置编号，并不是跨任意星系重排都不变的全球身份证。当前 CustomCreateBirthStarLite 按固定 ID 修改恒星，不会在恒星数组中间插入或重排，因此与本功能兼容。不要在已有存档中随意更改会重新排列恒星或行星的生成配置。
 
 ## 非 200 半径星球兼容
 
@@ -112,7 +139,7 @@ DSPAddPlanet/thunderstore/gs-theme-example-config.xml
 
 不需要写 C# 代码。玩家实际要改的是 XML 配置。
 
-推荐把只针对某个存档生效的星球写进 `GameNameSpecific`。`GameName`、`ClusterString`、`Star` 可以从游戏内 DSPAddPlanet 的 Add Planet 面板复制。
+推荐把只针对某个存档生效的星球写进 `GameNameSpecific`。`GameName`、`ClusterString`、`StarId` 可以从游戏内 DSPAddPlanet 的 Add Planet 面板查看和复制。
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -130,7 +157,7 @@ DSPAddPlanet/thunderstore/gs-theme-example-config.xml
                 <UniqueStarId>
                     <GameName>你的存档名</GameName>
                     <ClusterString>你的星区字符串</ClusterString>
-                    <Star>目标恒星名</Star>
+                    <StarId>31</StarId>
                 </UniqueStarId>
 
                 <!-- 星球参数写在这里 -->
@@ -149,7 +176,7 @@ DSPAddPlanet/thunderstore/gs-theme-example-config.xml
     <UniqueStarId>
         <GameName>你的存档名</GameName>
         <ClusterString>你的星区字符串</ClusterString>
-        <Star>目标恒星名</Star>
+        <StarId>31</StarId>
     </UniqueStarId>
 
     <IsBirthPoint>false</IsBirthPoint>
@@ -216,7 +243,7 @@ DSPAddPlanet/thunderstore/gs-theme-example-config.xml
     <UniqueStarId>
         <GameName>你的存档名</GameName>
         <ClusterString>你的星区字符串</ClusterString>
-        <Star>目标恒星名</Star>
+        <StarId>31</StarId>
     </UniqueStarId>
 
     <IsBirthPoint>false</IsBirthPoint>

@@ -435,7 +435,7 @@ namespace DSPAddPlanet
                 .Append("            <Planet>\r\n")
                 .Append("                <UniqueStarId>\r\n")
                 .Append("                    <ClusterString>The cluster string</ClusterString>\r\n")
-                .Append("                    <Star>The star name</Star>\r\n")
+                .Append("                    <StarId>1</StarId>\r\n")
                 .Append("                </UniqueStarId>\r\n")
                 .Append("                <IsBirthPoint>false</IsBirthPoint>\r\n")
                 .Append("                <Index>4</Index>\r\n")
@@ -483,7 +483,7 @@ namespace DSPAddPlanet
                 .Append("                <UniqueStarId>\r\n")
                 .Append("                    <GameName>The game name of your save file</GameName>\r\n")
                 .Append("                    <ClusterString>The cluster string</ClusterString>\r\n")
-                .Append("                    <Star>The star name</Star>\r\n")
+                .Append("                    <StarId>1</StarId>\r\n")
                 .Append("                </UniqueStarId>\r\n")
                 .Append("                <IsBirthPoint>false</IsBirthPoint>\r\n")
                 .Append("                <Index>4</Index>\r\n")
@@ -967,19 +967,32 @@ namespace DSPAddPlanet
             }
 
             string clusterString = ReadStringNode(nodeUniqueStarId, "ClusterString", true, null).Trim();
-            string star = ReadStringNode(nodeUniqueStarId, "Star", true, null).Trim();
             if (string.IsNullOrWhiteSpace(clusterString))
             {
                 throw new Exception("Parameter 'ClusterString' can not be empty");
             }
-            if (string.IsNullOrWhiteSpace(star))
+
+            bool hasStarId = nodeUniqueStarId.SelectSingleNode("StarId") != null;
+            int starId = default;
+            string star = null;
+            if (hasStarId)
             {
-                throw new Exception("Parameter 'Star' can not be empty");
+                starId = ReadIntNode(nodeUniqueStarId, "StarId", true, default, 1);
             }
+            else
+            {
+                star = ReadStringNode(nodeUniqueStarId, "Star", true, null).Trim();
+                if (string.IsNullOrWhiteSpace(star))
+                {
+                    throw new Exception("Parameter 'Star' can not be empty");
+                }
+            }
+
             if (!isGameNameRequired)
             {
-                // 如果不需要 GameName 的话，到这里就可以返回结果了
-                return Utility.UniqueStarIdWithoutGameName(clusterString, star);
+                return hasStarId
+                    ? Utility.UniqueStarIdWithoutGameName(clusterString, starId)
+                    : Utility.UniqueStarIdWithoutGameName(clusterString, star);
             }
 
             // 否则，获取 GameName 并返回带有 GameName 的结果
@@ -988,7 +1001,9 @@ namespace DSPAddPlanet
             {
                 throw new Exception("Parameter 'GameName' can not be empty when required");
             }
-            return Utility.UniqueStarIdWithGameName(gameName, clusterString, star);
+            return hasStarId
+                ? Utility.UniqueStarIdWithGameName(gameName, clusterString, starId)
+                : Utility.UniqueStarIdWithGameName(gameName, clusterString, star);
         }
     }
 }

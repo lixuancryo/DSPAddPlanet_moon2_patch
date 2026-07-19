@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Config>
     <!--
-        DSPAddPlanet-moon^2-patch 3.0.12 example.
+        DSPAddPlanet-moon^2-patch 3.0.13 example.
 
-        Replace GameName, ClusterString and Star with the values copied from the in-game Add Planet panel.
+        Replace GameName, ClusterString and StarId with the values shown by the in-game Add Planet panel.
+        StarId is preferred because it keeps targeting the same star slot after the star is renamed.
+        The legacy <Star>star name</Star> form is still supported for old configs.
         ThemeName can use GalacticScale-style themes without enabling GalacticScale.
 
         This switch controls whether these new themes can appear in the game's normal random galaxy generation.
@@ -37,7 +39,7 @@
                 <UniqueStarId>
                     <GameName>Replace with save name</GameName>
                     <ClusterString>Replace with cluster string</ClusterString>
-                    <Star>Replace with star name</Star>
+                    <StarId>31</StarId>
                 </UniqueStarId>
 
                 <IsBirthPoint>false</IsBirthPoint>
@@ -68,7 +70,7 @@
                 <UniqueStarId>
                     <GameName>Replace with save name</GameName>
                     <ClusterString>Replace with cluster string</ClusterString>
-                    <Star>Replace with star name</Star>
+                    <StarId>31</StarId>
                 </UniqueStarId>
 
                 <IsBirthPoint>false</IsBirthPoint>
@@ -100,7 +102,7 @@
                 <UniqueStarId>
                     <GameName>Replace with save name</GameName>
                     <ClusterString>Replace with cluster string</ClusterString>
-                    <Star>Replace with star name</Star>
+                    <StarId>31</StarId>
                 </UniqueStarId>
 
                 <IsBirthPoint>false</IsBirthPoint>
@@ -134,7 +136,7 @@
                 <UniqueStarId>
                     <GameName>Replace with save name</GameName>
                     <ClusterString>Replace with cluster string</ClusterString>
-                    <Star>Replace with star name</Star>
+                    <StarId>31</StarId>
                 </UniqueStarId>
 
                 <IsBirthPoint>false</IsBirthPoint>

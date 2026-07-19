@@ -117,11 +117,11 @@ namespace DSPAddPlanet
             // 唯一恒星编号
             if (string.IsNullOrWhiteSpace(GameMain.gameName))
             {
-                uniqueStarIdString = UniqueStarId.text = Utility.UniqueStarIdWithoutGameName(GameMain.data.gameDesc.clusterString, star.name);
+                uniqueStarIdString = UniqueStarId.text = Utility.UniqueStarIdWithoutGameName(GameMain.data.gameDesc.clusterString, star.id);
             }
             else
             {
-                uniqueStarIdString = UniqueStarId.text = Utility.UniqueStarIdWithGameName(GameMain.gameName, GameMain.data.gameDesc.clusterString, star.name);
+                uniqueStarIdString = UniqueStarId.text = Utility.UniqueStarIdWithGameName(GameMain.gameName, GameMain.data.gameDesc.clusterString, star.id);
             }
 
             // 额外行星信息

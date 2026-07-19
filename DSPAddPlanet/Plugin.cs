@@ -23,8 +23,8 @@ namespace DSPAddPlanet
     {
         public const string PLUGIN_GUID = "Zincon.DSPAddPlanetMoon2Patch";
         public const string PLUGIN_NAME = "DSPAddPlanet-moon^2-patch";
-        public const string PLUGIN_VERSION = "3.0.12";
-        public const string BUILD_TAG = "dspaddplanet-3.0.12-planet-radius-compat-2026-07-18";
+        public const string PLUGIN_VERSION = "3.0.13";
+        public const string BUILD_TAG = "dspaddplanet-3.0.13-star-id-targeting-2026-07-19";
 
         static public Plugin Instance { get => instance; }
         static private Plugin instance = null;
@@ -190,6 +190,7 @@ namespace DSPAddPlanet
                 List<AdditionalPlanetConfig> configList = Utility.GetPlanetConfigList(
                     GameMain.gameName,
                     gameDesc.clusterString,
+                    star.id,
                     star.name,
                     Instance.globalPlanetConfig,
                     Instance.gameNameSpecificConfig,
@@ -807,6 +808,7 @@ namespace DSPAddPlanet
                 List<AdditionalPlanetConfig> configList = Utility.GetPlanetConfigList(
                     GameMain.gameName,
                     GameMain.data.gameDesc.clusterString,
+                    planet.star.id,
                     planet.star.name,
                     Instance.globalPlanetConfig,
                     Instance.gameNameSpecificConfig,
@@ -884,6 +886,7 @@ namespace DSPAddPlanet
                 List<AdditionalPlanetConfig> configList = Utility.GetPlanetConfigList(
                     GameMain.gameName,
                     GameMain.data.gameDesc.clusterString,
+                    planet.star.id,
                     planet.star.name,
                     Instance.globalPlanetConfig,
                     Instance.gameNameSpecificConfig,
@@ -1138,6 +1141,7 @@ namespace DSPAddPlanet
                 List<AdditionalPlanetConfig> configList = Utility.GetPlanetConfigList(
                     GameMain.gameName,
                     GameMain.data.gameDesc.clusterString,
+                    planet.star.id,
                     planet.star.name,
                     Instance.globalPlanetConfig,
                     Instance.gameNameSpecificConfig,
@@ -1191,6 +1195,7 @@ namespace DSPAddPlanet
                 List<AdditionalPlanetConfig> configList = Utility.GetPlanetConfigList(
                     GameMain.gameName,
                     GameMain.data.gameDesc.clusterString,
+                    planet.star.id,
                     planet.star.name,
                     Instance.globalPlanetConfig,
                     Instance.gameNameSpecificConfig,
@@ -1244,6 +1249,7 @@ namespace DSPAddPlanet
                 List<AdditionalPlanetConfig> configList = Utility.GetPlanetConfigList(
                     GameMain.gameName,
                     GameMain.data.gameDesc.clusterString,
+                    planet.star.id,
                     planet.star.name,
                     Instance.globalPlanetConfig,
                     Instance.gameNameSpecificConfig,
