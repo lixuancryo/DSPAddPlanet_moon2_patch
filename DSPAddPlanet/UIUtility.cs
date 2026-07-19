@@ -75,7 +75,7 @@ namespace DSPAddPlanet
             rect.offsetMax = offsetMax;
 
             Text go_cmpText = go.GetComponent<Text>();
-            go_cmpText.horizontalOverflow = HorizontalWrapMode.Overflow;
+            go_cmpText.horizontalOverflow = HorizontalWrapMode.Wrap;
             go_cmpText.verticalOverflow = VerticalWrapMode.Overflow;
             go_cmpText.font = ResourceCache.FontSAIRASB;
             go_cmpText.text = "";

@@ -25,6 +25,8 @@
 
 - **按恒星 ID 添加星球**：目标恒星不再必须依赖可能变化的名称。最短写法：`<StarId>31</StarId>`。修改恒星名称、类型或参数后，星球仍会添加到 ID 31；旧的 `<Star>恒星名</Star>` 写法继续兼容。
 
+- **更清晰的星图信息面板**：左侧恒星名直接显示 ID，右侧可以复制完整 `UniqueStarId` XML；星球按“行星 → 卫星 → 更深层卫星”逐级缩进，同一父星下按 `orbitIndex` 排序，并显示最大已用 `Index` 和建议的下一个 `Index`。
+
 - **卫星的卫星**：新增星球可以围绕另一颗卫星运行。最短写法：`<OrbitAroundIndex>5</OrbitAroundIndex>`。这里的 `5` 填父星球的 `Index`；`OrbitAround` 仍要保留；`OrbitIndex` 控制轨道序号；`Number` 控制该轨道中心下的编号。
 
 - **GalacticScale 风格星球主题**：不开启 GalacticScale，也能用 Beach、GiganticForest、SulfurSea 等主题。最短写法：`<ThemeName>Beach</ThemeName>`。`ThemeName` 和 `ThemeId` 二选一，推荐用 `ThemeName`；固态星球通常写 `GasGiant=false`。
@@ -87,6 +89,18 @@
 
 恒星 ID 是星系中的位置编号，并不是跨任意星系重排都不变的全球身份证。当前 CustomCreateBirthStarLite 按固定 ID 修改恒星，不会在恒星数组中间插入或重排，因此与本功能兼容。不要在已有存档中随意更改会重新排列恒星或行星的生成配置。
 
+## 星图 Add Planet 面板
+
+在游戏星图中打开 `Add Planet` 面板后：
+
+- 左侧恒星列表使用 `[31] 恒星名` 格式，方括号中的数字就是 `StarId`。长恒星名会在列表宽度内自动缩小。
+- 选择恒星后，右侧顶部会直接显示 `Star ID: 31` 和 `<StarId>31</StarId>`。
+- `Copy XML` 会复制完整的 `<UniqueStarId>...</UniqueStarId>`，其中包含当前存档名、星区字符串和恒星 ID，可以直接放进行星配置。
+- 摘要行显示 `Planets`、`Max used Index` 和 `Next Index`。新增星球时通常使用 `Next Index`；如果你故意保留了索引空缺，仍需自行确认配置连续性。
+- 行星列表按实际公转关系形成树状结构。围绕恒星运行的行星位于第一级，卫星向右缩进一级，卫星的卫星继续缩进。
+- 同一个父星下的子星球优先按 `orbitIndex` 排列；相同时再按 `number` 和 `index` 排列。
+- 每颗星球的参数拆成多行，长文本会在面板内换行；内容超过高度时只进行纵向滚动。
+
 ## 非 200 半径星球兼容
 
 游戏原版只自然生成半径 200 的固态星球，因此很多代码虽然支持读取 `Radius`，实际仍带有半径 200 的默认假设。3.0.12 针对 GalacticScale 中能确认、并且适合独立移植的部分做了以下调整：
@@ -139,7 +153,7 @@ DSPAddPlanet/thunderstore/gs-theme-example-config.xml
 
 不需要写 C# 代码。玩家实际要改的是 XML 配置。
 
-推荐把只针对某个存档生效的星球写进 `GameNameSpecific`。`GameName`、`ClusterString`、`StarId` 可以从游戏内 DSPAddPlanet 的 Add Planet 面板查看和复制。
+推荐把只针对某个存档生效的星球写进 `GameNameSpecific`。在游戏内 DSPAddPlanet 的 Add Planet 面板选择恒星，然后点击 `Copy XML`，即可复制包含 `GameName`、`ClusterString` 和 `StarId` 的完整片段。
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Config>
     <!--
-        DSPAddPlanet-moon^2-patch 3.0.13 example.
+        DSPAddPlanet-moon^2-patch 3.0.14 example.
 
         Replace GameName, ClusterString and StarId with the values shown by the in-game Add Planet panel.
         StarId is preferred because it keeps targeting the same star slot after the star is renamed.

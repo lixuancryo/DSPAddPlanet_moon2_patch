@@ -1,3 +1,13 @@
+# DSPAddPlanet 3.0.14
+
+- Added explicit `Star ID` and `<StarId>...</StarId>` lines to the starmap Add Planet panel.
+- Changed `Copy` to `Copy XML`; it now copies a complete `UniqueStarId` XML block for the selected star.
+- Displayed star IDs in the left star list and enabled best-fit text for long star names.
+- Rebuilt the planet list as a parent-child tree, with recursive indentation for moons and deeper submoons.
+- Sorted every sibling group by `orbitIndex`, then `number`, then `index`.
+- Added a compact summary showing planet count, maximum used `Index`, and the next suggested `Index`.
+- Enabled wrapped text, dynamic right-panel content height, and vertical-only scrolling to prevent long lines from escaping the panel.
+
 # DSPAddPlanet 3.0.13
 
 - Added the preferred `<StarId>` XML selector so custom planets keep targeting a fixed one-based star slot after the star is renamed or modified.

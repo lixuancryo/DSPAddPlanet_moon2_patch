@@ -23,8 +23,8 @@ namespace DSPAddPlanet
     {
         public const string PLUGIN_GUID = "Zincon.DSPAddPlanetMoon2Patch";
         public const string PLUGIN_NAME = "DSPAddPlanet-moon^2-patch";
-        public const string PLUGIN_VERSION = "3.0.13";
-        public const string BUILD_TAG = "dspaddplanet-3.0.13-star-id-targeting-2026-07-19";
+        public const string PLUGIN_VERSION = "3.0.14";
+        public const string BUILD_TAG = "dspaddplanet-3.0.14-starmap-panel-tree-2026-07-19";
 
         static public Plugin Instance { get => instance; }
         static private Plugin instance = null;
