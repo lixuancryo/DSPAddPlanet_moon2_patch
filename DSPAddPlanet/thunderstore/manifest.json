@@ -1,11 +1,10 @@
 {
   "namespace": "Zincon",
-  "name": "DSPAddPlanet-moon^2-patch",
-  "description": "DSPAddPlanet-moon^2-patch: custom DSPAddPlanet fork with moon-of-moon support and GalacticScale-style themes for Dyson Sphere Program.",
-  "version_number": "3.0.14",
+  "name": "DSPAddPlanet_moooooon_patch",
+  "description": "DSPAddPlanet_moooooon_patch: custom DSPAddPlanet fork with moon-of-moon support and GalacticScale-style themes for Dyson Sphere Program.",
+  "version_number": "3.0.15",
   "dependencies": [
     "xiaoye97-BepInEx-5.4.17"
   ],
-  "website_url": "https://github.com/lixuancryo/DSPAddPlanet_moon2_patch",
-  "FullName": "Zincon-DSPAddPlanet-moon^2-patch"
+  "website_url": "https://github.com/lixuancryo/DSPAddPlanet_moon2_patch"
 }

@@ -1,3 +1,8 @@
+# DSPAddPlanet 3.0.15
+
+- Changed the Thunderstore/r2modman package name to the validator-safe `DSPAddPlanet_moooooon_patch`.
+- Kept the in-game plugin GUID and display name unchanged so existing configurations remain compatible.
+
 # DSPAddPlanet 3.0.14
 
 - Added explicit `Star ID` and `<StarId>...</StarId>` lines to the starmap Add Planet panel.

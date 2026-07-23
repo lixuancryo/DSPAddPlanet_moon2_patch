@@ -1,6 +1,10 @@
 DSPAddPlanet 3.0 notes
 
-Internal plugin version: 3.0.14
+Internal plugin version: 3.0.15
+
+3.0.15 package metadata:
+- The Thunderstore/r2modman package name is now DSPAddPlanet_moooooon_patch.
+- The in-game plugin GUID and display name are unchanged for compatibility.
 
 3.0.14 starmap panel:
 - The star list and selected-star header now expose the one-based StarId.
